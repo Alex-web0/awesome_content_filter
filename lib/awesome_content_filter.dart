@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+String buildLabel(Enum e) => e.name;
+
 /// [T] must implement [toString] in a proper way to show the filter
 ///
 /// if initial filter is null, it resorts to all indicating no filter is applied
@@ -11,14 +13,18 @@ class ListFilteringTile<T extends Enum> extends StatefulWidget {
     required this.onChanged,
     this.initialFilter,
     this.allLabel = "All",
+    required this.enumValues,
+    this.createLabel = buildLabel,
   });
 
+  final String Function(T e) createLabel;
   final void Function(T? type) onChanged;
   final T? initialFilter;
+  final List<T> enumValues;
   final String allLabel;
 
   @override
-  State<ListFilteringTile> createState() => _ListFilteringTileState<T>();
+  State<ListFilteringTile<T>> createState() => _ListFilteringTileState<T>();
 }
 
 class _ListFilteringTileState<T extends Enum>
@@ -65,8 +71,7 @@ class _ListFilteringTileState<T extends Enum>
                 ),
               ),
             ] +
-            (T as dynamic)
-                .values
+            widget.enumValues
                 .map((e) => _buildFilter(selectedType == e, e))
                 .toList() +
             [
@@ -84,7 +89,7 @@ class _ListFilteringTileState<T extends Enum>
       padding: const EdgeInsets.all(4.0),
       child: ChoiceChip(
         key: Key(l?.name ?? widget.allLabel.toLowerCase()),
-        label: Text(l?.toString() ?? widget.allLabel),
+        label: Text(l == null ? widget.allLabel : widget.createLabel(l)),
         selected: selected,
         onSelected: (s) {
           setState(() => selectedType = l);
@@ -100,8 +105,7 @@ class _ListFilteringTileState<T extends Enum>
         !_controller.hasClients ? 0.0 : _controller.position.maxScrollExtent;
     double thisOffset = l == null || !_controller.hasClients
         ? 0
-        : ((((T as dynamic).values).indexOf(l) + 1) /
-                (T as dynamic).values.length) *
+        : (((widget.enumValues).indexOf(l) + 1) / widget.enumValues.length) *
             (max + 50);
     if (thisOffset > max) thisOffset = max;
     _controller.animateTo(thisOffset,

@@ -1,6 +1,6 @@
 name: awesome_content_filter
 description: A package to help you filter easily through any listing
-version: 0.0.1
+version: 0.0.4
 homepage:
 
 environment:

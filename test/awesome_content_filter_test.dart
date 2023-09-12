@@ -1,12 +1,20 @@
-// import 'package:flutter_test/flutter_test.dart';
-//
-// import 'package:awesome_content_filter/awesome_content_filter.dart';
-//
-// void main() {
-//   test('adds one to input values', () {
-//     final calculator = Calculator();
-//     expect(calculator.addOne(2), 3);
-//     expect(calculator.addOne(-7), -6);
-//     expect(calculator.addOne(0), 1);
-//   });
-// }
+import 'package:awesome_content_filter/awesome_content_filter.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+enum TestType { sd, gg, ss }
+
+void main() {
+  testWidgets('adds one to input values', (w) async {
+    w.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: ListFilteringTile<TestType>(
+            onChanged: (TestType? type) {},
+            enumValues: TestType.values,
+          ),
+        ),
+      ),
+    ));
+  });
+}
